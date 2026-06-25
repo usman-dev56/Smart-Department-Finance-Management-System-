@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.spec
+venv/
+venv312/
+env/
+ENV/
+.venv/
+*.log
+*.db
+*.sqlite3
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data files (exclude database and logs)
+data/database/*.db
+data/logs/*.log
+data/backups/*
+data/receipts/*.pdf
+data/receipts/*.png
+data/receipts/qr/*.png
+data/exports/*
+
+# Keep data folder structure
+!data/database/.gitkeep
+!data/logs/.gitkeep
+!data/backups/.gitkeep
+!data/receipts/.gitkeep
+!data/receipts/qr/.gitkeep
+!data/exports/.gitkeep
+
+# Build
+build/
+dist/
+*.spec
+SDFMS.spec
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini

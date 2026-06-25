@@ -1,0 +1,1 @@
+"""Views package - GUI components"""

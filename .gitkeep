@@ -1,0 +1,13 @@
+# Create data folder structure with .gitkeep files
+mkdir data\database
+mkdir data\logs
+mkdir data\backups
+mkdir data\receipts\qr
+mkdir data\exports
+
+echo. > data\database\.gitkeep
+echo. > data\logs\.gitkeep
+echo. > data\backups\.gitkeep
+echo. > data\receipts\.gitkeep
+echo. > data\receipts\qr\.gitkeep
+echo. > data\exports\.gitkeep
