@@ -1,8 +1,8 @@
-# 📊 SDFMS - Smart Department Finance Management System
+# SDFMS - Smart Department Finance Management System
 
 SDFMS (Smart Department Finance Management System) is a standalone desktop application designed specifically for university departments to manage their financial operations. It provides a complete solution for tracking student payments, managing funds and campaigns, generating receipts, and producing comprehensive financial reports.
 
-### ✨ **Key Features**
+### **Key Features**
 
 - 📊 **Dashboard** - Real-time financial overview with statistics and quick actions
 - 👨‍🎓 **Student Management** - Register, search, and manage students with custom roll numbers
@@ -15,7 +15,7 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ---
 
-## 📸 **Screenshots**
+## **Screenshots**
 
 | Dashboard | Payment Collection |
 |-----------|-------------------|
@@ -27,7 +27,7 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ---
 
-## 🚀 **Quick Start**
+## **Quick Start**
 
 ### Download
 
@@ -63,7 +63,7 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ---
 
-## 💻 **System Requirements**
+##  **System Requirements**
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
@@ -76,7 +76,7 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ---
 
-## 📁 **Folder Structure**
+## **Folder Structure**
 
 SDFMS/
 ├── SDFMS.exe # Main executable
@@ -138,7 +138,7 @@ Search by name or roll number
 Quick payment from student list
 
 
-💰 Fund Management
+ Fund Management
 
 Create unlimited funds with types
 Fund types: General, Academic, Event, Tour, Lab, Sports, Workshop, Industrial Visit, Farewell, Other
@@ -146,14 +146,14 @@ Activate/Deactivate funds
 Delete funds (only if no campaigns linked)
 
 
-📋 Campaign Management
+ Campaign Management
 
 Target specific student groups (Program, Session, Semester, Shift)
 Auto-track paid/pending students
 Collection percentage display
 Campaign details with paid/pending lists
 
-💳 Payment Collection
+ Payment Collection
 
 Search student by roll number
 Show only eligible (unpaid) campaigns
@@ -169,7 +169,7 @@ Receipt image upload
 Filter by fund
 Total expenses calculation
 
-📈 Reports
+ Reports
 
 Collection Report (with date filters)
 Expense Report (with date filters)
@@ -188,7 +188,7 @@ Monthly Collection Trend
 Fund Health Status
 
 
-⚙️ Settings
+ Settings
 
 General Settings (Department/University info)
 Academic Structure (Sessions, Programs, Shifts, Sections)
@@ -197,7 +197,7 @@ Backup & Restore
 
 
 
-📝 Database Schema
+ Database Schema
 
 The application uses SQLite with the following main tables:
 departments - Department settings
@@ -209,20 +209,20 @@ payments - Payment records
 expenses - Expense records
 
 
-📧 Support
+Support
 
-📧 Email: usmanumardraz56@gmail.com
-📱 Phone: +92-3074825440
+ Email: usmanumardraz56@gmail.com
+ Phone: +92-3074825440
 
 
-🙏 Acknowledgments
+ Acknowledgments
 
 Built with CustomTkinter
 PDF generation with ReportLab
 Charts with Matplotlib
 QR codes with qrcode
 
-🏛️ Developed For
+ Developed For
 Developed as a Semester Project for Department of Computer Science, GC University Faisalabad.
 
 Made with ❤️ by Usman
