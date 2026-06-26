@@ -82,6 +82,62 @@ def delete_student(student_id):
     return True
 
 
+
+
+def update_student(student_id, data):
+    """Update student information"""
+    db = get_db()
+    
+    # Check if student exists
+    student = db.fetchone("SELECT id FROM students WHERE id = ?", (student_id,))
+    if not student:
+        raise ValueError("Student not found")
+    
+    # Build update data
+    update_data = {}
+    if "student_name" in data:
+        update_data["student_name"] = data["student_name"].strip()
+    if "program_id" in data:
+        update_data["program_id"] = data["program_id"]
+    if "session_id" in data:
+        update_data["session_id"] = data["session_id"]
+    if "semester" in data:
+        update_data["semester"] = data["semester"]
+    if "section_id" in data:
+        update_data["section_id"] = data["section_id"]
+    if "shift_id" in data:
+        update_data["shift_id"] = data["shift_id"]
+    if "phone" in data:
+        update_data["phone"] = data["phone"]
+    if "email" in data:
+        update_data["email"] = data["email"]
+    
+    if not update_data:
+        return True
+    
+    # Update student
+    set_clause = ", ".join([f"{k} = ?" for k in update_data.keys()])
+    query = f"UPDATE students SET {set_clause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    values = list(update_data.values()) + [student_id]
+    db.execute(query, values)
+    return True
+
+
+def get_student_by_id(student_id):
+    """Get student by ID with all details"""
+    db = get_db()
+    return db.fetchone(
+        """SELECT s.*, p.program_name, p.program_code,
+                  ss.session_name, sec.section_name, sh.shift_name
+           FROM students s
+           LEFT JOIN programs p ON s.program_id = p.id
+           LEFT JOIN sessions ss ON s.session_id = ss.id
+           LEFT JOIN sections sec ON s.section_id = sec.id
+           LEFT JOIN shifts sh ON s.shift_id = sh.id
+           WHERE s.id = ?""",
+        (student_id,)
+    )
+
 def get_student_by_roll(roll_number):
     """Get student by roll number with all details"""
     db = get_db()

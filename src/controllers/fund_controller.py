@@ -33,7 +33,7 @@ def get_all_funds(department_id=1):
     """Get all funds for a department"""
     db = get_db()
     return db.fetchall(
-        "SELECT * FROM funds WHERE department_id = ? ORDER BY fund_name",
+        "SELECT * FROM funds WHERE department_id = ? ORDER BY id ASC",
         (department_id,)
     )
 

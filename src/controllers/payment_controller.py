@@ -172,6 +172,8 @@ def get_payments_by_student(student_id):
     )
 
 
+
+
 def get_payments_by_campaign(campaign_id):
     """Get all payments for a specific campaign"""
     db = get_db()
@@ -183,3 +185,18 @@ def get_payments_by_campaign(campaign_id):
            ORDER BY p.payment_date DESC""",
         (campaign_id,)
     )
+
+# src/controllers/payment_controller.py - Add this function
+
+def delete_payment(payment_id):
+    """Delete a payment by ID"""
+    db = get_db()
+    
+    # Check if payment exists
+    payment = db.fetchone("SELECT id FROM payments WHERE id = ?", (payment_id,))
+    if not payment:
+        raise ValueError("Payment not found")
+    
+    # Delete the payment
+    db.delete("payments", "id = ?", (payment_id,))
+    return True

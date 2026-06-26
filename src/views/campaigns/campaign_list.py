@@ -18,12 +18,12 @@ class CampaignList(ctk.CTkFrame):
         self.load_campaigns()
     
     def create_header(self):
-        header = ctk.CTkFrame(self, fg_color="#021635" )
+        header = ctk.CTkFrame(self, fg_color="#021635")
         header.pack(fill="x", padx=10, pady=25)
         
         ctk.CTkLabel(
             header, 
-            text=" Campaign Management", 
+            text="📋 Campaign Management", 
             font=("Arial", 33, "bold")
         ).pack(side="left")
         
@@ -38,14 +38,17 @@ class CampaignList(ctk.CTkFrame):
         self.add_btn = ctk.CTkButton(
             header,
             text="➕ Add Campaign",
+            font=("Arial", 15, "bold"),
             command=self.open_campaign_creation,
             fg_color="#1a73e8",
-            width=140
+            hover_color="#1557b0",
+            width=150,
+            height=42,
+            corner_radius=8
         )
-        self.add_btn.pack(side="right", padx=10)
+        self.add_btn.pack(side="right", padx=10, pady=(18, 10))
     
     def open_campaign_creation(self):
-        """Open campaign creation view"""
         from src.views.campaigns.create_campaign import CreateCampaign
         parent = self.master
         while parent:
@@ -58,29 +61,27 @@ class CampaignList(ctk.CTkFrame):
         table_frame = ctk.CTkFrame(self)
         table_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # Headers
-        headers_frame = ctk.CTkFrame(table_frame, fg_color="#2a2a3d")
+        headers_frame = ctk.CTkFrame(table_frame, fg_color="#1a1a2e")
         headers_frame.pack(fill="x", pady=(0, 2))
         
-        headers = ["ID", "Campaign", "Fund", "Target", "Amount", "Collected", "Status", "Actions"]
-        widths = [40, 160, 140, 150, 80, 100, 80, 180]
+        col_widths = [45, 150, 170, 170, 90, 90, 80, 130]
+        col_aligns = ["w", "w", "w", "w", "w", "w", "w", "e"]
+        col_labels = ["ID", "Campaign", "Fund", "Target", "Amount", "Collected", "Status", "Actions"]
         
-        for i, (header, width) in enumerate(zip(headers, widths)):
+        for i, (text, width, align) in enumerate(zip(col_labels, col_widths, col_aligns)):
             ctk.CTkLabel(
                 headers_frame, 
-                text=header, 
+                text=text, 
                 font=("Arial", 12, "bold"),
-                width=width
-            ).pack(side="left", padx=5, pady=5)
+                width=width,
+                anchor=align,
+                text_color="#a0a0b0"
+            ).grid(row=0, column=i, padx=3, pady=8, sticky=align)
         
-        self.table_body = ctk.CTkScrollableFrame(
-            table_frame, 
-            fg_color="transparent"
-        )
+        self.table_body = ctk.CTkScrollableFrame(table_frame, fg_color="transparent")
         self.table_body.pack(fill="both", expand=True)
     
     def load_campaigns(self):
-        """Load and display all campaigns"""
         for widget in self.table_body.winfo_children():
             widget.destroy()
         
@@ -96,119 +97,228 @@ class CampaignList(ctk.CTkFrame):
             return
         
         for campaign in campaigns:
-            # Get summary
-            summary = get_campaign_summary(campaign["id"])
-            if summary:
-                eligible = summary.get("total_eligible", 0)
-                paid = summary.get("total_paid", 0)
-                collected = summary.get("total_collected", 0)
-            else:
-                eligible = 0
-                paid = 0
-                collected = 0
-            
-            row = ctk.CTkFrame(self.table_body)
-            row.pack(fill="x", pady=2)
-            
-            # ID
-            ctk.CTkLabel(row, text=str(campaign["id"]), width=40).pack(side="left", padx=5, pady=5)
-            
-            # Campaign Name
+            self.create_row(campaign)
+    
+    def create_row(self, campaign):
+        summary = get_campaign_summary(campaign["id"])
+        collected = summary.get("total_collected", 0) if summary else 0
+        is_active = campaign["is_active"]
+        
+        row = ctk.CTkFrame(self.table_body, fg_color="transparent")
+        row.pack(fill="x", pady=2)
+        
+        col_widths = [45, 150, 170, 170, 90, 90, 80, 130]
+        
+        # ─── Column 0: ID ──────────────────────────────────────────────────
+        ctk.CTkLabel(
+            row, 
+            text=str(campaign["id"]), 
+            width=col_widths[0],
+            anchor="w",
+            font=("Arial", 12)
+        ).grid(row=0, column=0, padx=3, pady=5, sticky="w")
+        
+        # ─── Column 1: Campaign Name ──────────────────────────────────────
+        camp_name = campaign["campaign_name"]
+        name_frame = ctk.CTkFrame(row, fg_color="transparent")
+        name_frame.grid(row=0, column=1, padx=3, pady=5, sticky="w")
+        
+        if len(camp_name) > 10:
+            name_display = camp_name[:10] + "..."
             ctk.CTkLabel(
-                row, 
-                text=campaign["campaign_name"], 
-                width=160, 
-                font=("Arial", 13, "bold")
-            ).pack(side="left", padx=5, pady=5)
+                name_frame, 
+                text=name_display, 
+                width=col_widths[1] - 50,
+                anchor="w",
+                font=("Arial", 13, "bold"),
+                text_color="#ffffff"
+            ).grid(row=0, column=0, padx=(0, 2), sticky="w")
             
-            # Fund
-            ctk.CTkLabel(row, text=campaign.get("fund_name", "-"), width=140).pack(side="left", padx=5, pady=5)
-            
-            # Target
-            target = self.get_target_summary(campaign)
-            ctk.CTkLabel(row, text=target, width=150, font=("Arial", 10)).pack(side="left", padx=5, pady=5)
-            
-            # Amount
-            amount = campaign.get("required_amount", 0)
-            ctk.CTkLabel(
-                row, 
-                text=f"Rs. {amount:,.0f}", 
-                width=80,
-                font=("Arial", 11, "bold")
-            ).pack(side="left", padx=5, pady=5)
-            
-            # Collected
-            ctk.CTkLabel(
-                row, 
-                text=f"Rs. {collected:,.0f}", 
-                width=100,
-                text_color="#0f9d58",
-                font=("Arial", 11)
-            ).pack(side="left", padx=5, pady=5)
-            
-            # Status
-            status_text = "✅ Active" if campaign["is_active"] else "❌ Inactive"
-            status_color = "#0f9d58" if campaign["is_active"] else "#db4437"
-            ctk.CTkLabel(
-                row, 
-                text=status_text, 
-                width=80,
-                text_color=status_color
-            ).pack(side="left", padx=5, pady=5)
-            
-            # Actions
-            actions_frame = ctk.CTkFrame(row, fg_color="transparent")
-            actions_frame.pack(side="right", padx=5, pady=5)
-            
-            # View Details
             ctk.CTkButton(
-                actions_frame,
-                text="📊 Details",
-                command=lambda c=campaign: self.view_details(c),
+                name_frame,
+                text="👁",
+                command=lambda n=camp_name: messagebox.showinfo("Campaign Name", n),
                 fg_color="#1a73e8",
-                width=65,
-                height=28
-            ).pack(side="left", padx=2)
+                hover_color="#1557b0",
+                text_color="#ffffff",
+                width=26,
+                height=22,
+                corner_radius=6,
+                font=("Arial", 10)
+            ).grid(row=0, column=1, padx=(0, 23), sticky="w")
+        else:
+            ctk.CTkLabel(
+                name_frame, 
+                text=camp_name, 
+                width=col_widths[1],
+                anchor="w",
+                font=("Arial", 13, "bold")
+            ).grid(row=0, column=0, padx=0, sticky="w")
+        
+        # ─── Column 2: Fund ──────────────────────────────────────────────────
+        fund_name = campaign.get("fund_name", "-")
+        fund_frame = ctk.CTkFrame(row, fg_color="transparent")
+        fund_frame.grid(row=0, column=2, padx=3, pady=5, sticky="w")
+        
+        if len(fund_name) > 10:
+            fund_display = fund_name[:13] + "..."
+            ctk.CTkLabel(
+                fund_frame, 
+                text=fund_display, 
+                width=col_widths[2] - 50,
+                anchor="w",
+                font=("Arial", 12),
+                text_color="#ffffff"
+            ).grid(row=0, column=0, padx=(0, 2), sticky="w")
             
-            # Toggle Status
-            toggle_text = "Deactivate" if campaign["is_active"] else "Activate"
-            toggle_color = "#db4437" if campaign["is_active"] else "#0f9d58"
             ctk.CTkButton(
-                actions_frame,
-                text=toggle_text,
-                command=lambda c=campaign: self.toggle_status(c),
-                fg_color=toggle_color,
-                width=70,
-                height=28
-            ).pack(side="left", padx=2)
+                fund_frame,
+                text="👁",
+                command=lambda n=fund_name: messagebox.showinfo("Fund Name", n),
+                fg_color="#1a73e8",
+                hover_color="#1557b0",
+                text_color="#ffffff",
+                width=26,
+                height=22,
+                corner_radius=6,
+                font=("Arial", 10)
+            ).grid(row=0, column=1, padx=(0, 23), sticky="w")
+        else:
+            ctk.CTkLabel(
+                fund_frame, 
+                text=fund_name, 
+                width=col_widths[2],
+                anchor="w",
+                font=("Arial", 12)
+            ).grid(row=0, column=0, padx=0, sticky="w")
+        
+        # ─── Column 3: Target ──────────────────────────────────────────────
+        target = self.get_target_summary(campaign)
+        target_frame = ctk.CTkFrame(row, fg_color="transparent")
+        target_frame.grid(row=0, column=3, padx=(3,0), pady=5, sticky="w")
+        
+        if len(target) > 12:
+            target_display = target[:14] + "..."
+            ctk.CTkLabel(
+                target_frame, 
+                text=target_display, 
+                width=col_widths[3] - 48,
+                anchor="w",
+                font=("Arial", 12),
+                text_color="#ffffff"
+            ).grid(row=0, column=0, padx=(0, 0), sticky="w")
             
-            # Delete
             ctk.CTkButton(
-                actions_frame,
-                text="🗑",
-                command=lambda c=campaign: self.delete_campaign(c),
-                fg_color="#db4437",
-                width=35,
-                height=28
-            ).pack(side="left", padx=2)
+                target_frame,
+                text="👁",
+                command=lambda t=target: messagebox.showinfo("Target Details", t),
+                fg_color="#1a73e8",
+                hover_color="#1557b0",
+                text_color="#ffffff",
+                width=26,
+                height=22,
+                corner_radius=6,
+                font=("Arial", 10)
+            ).grid(row=0, column=1, padx=(0, 21), sticky="w")
+        else:
+            ctk.CTkLabel(
+                target_frame, 
+                text=target, 
+                width=col_widths[3],
+                anchor="w",
+                font=("Arial", 12)
+            ).grid(row=0, column=0, padx=0, sticky="w")
+        
+        # ─── Column 4: Amount ──────────────────────────────────────────────
+        amount = campaign.get("required_amount", 0)
+        ctk.CTkLabel(
+            row, 
+            text=f"Rs.{amount:,.0f}", 
+            width=col_widths[4],
+            font=("Arial", 12, "bold"),
+            anchor="w"
+        ).grid(row=0, column=4, padx=3, pady=5, sticky="w")
+        
+        # ─── Column 5: Collected ────────────────────────────────────────────
+        ctk.CTkLabel(
+            row, 
+            text=f"Rs.{collected:,.0f}", 
+            width=col_widths[5],
+            text_color="#0f9d58",
+            font=("Arial", 12, "bold"),
+            anchor="w"
+        ).grid(row=0, column=5, padx=3, pady=5, sticky="w")
+        
+        # ─── Column 6: Status ──────────────────────────────────────────────
+        status_text = "Active" if is_active else "Inactive"
+        status_color = "#0f9d58" if is_active else "#db4437"
+        ctk.CTkLabel(
+            row, 
+            text=status_text, 
+            width=col_widths[6],
+            text_color=status_color,
+            font=("Arial", 11, "bold"),
+            anchor="w"
+        ).grid(row=0, column=6, padx=3, pady=5, sticky="w")
+        
+        # ─── Column 7: Actions (RIGHT ALIGNED) ──────────────────────────────
+        actions_frame = ctk.CTkFrame(row, fg_color="transparent")
+        actions_frame.grid(row=0, column=7, padx=(45,5), pady=5, sticky="e")
+        
+        # Details - Right aligned
+        ctk.CTkButton(
+            actions_frame,
+            text="📊",
+            command=lambda c=campaign: self.view_details(c),
+            fg_color="#1a73e8",
+            hover_color="#1557b0",
+            width=30,
+            height=26,
+            corner_radius=6,
+            font=("Arial", 12)
+        ).grid(row=0, column=0, padx=1, sticky="e")
+        
+        # Toggle Status - Right aligned
+        toggle_color = "#db4437" if is_active else "#0f9d58"
+        toggle_text = "🔴" if is_active else "🟢"
+        ctk.CTkButton(
+            actions_frame,
+            text=toggle_text,
+            command=lambda c=campaign: self.toggle_status(c),
+            fg_color=toggle_color,
+            hover_color="#b8322a" if is_active else "#0b7e45",
+            width=30,
+            height=26,
+            corner_radius=6,
+            font=("Arial", 12)
+        ).grid(row=0, column=1, padx=1, sticky="e")
+        
+        # Delete - Right aligned
+        ctk.CTkButton(
+            actions_frame,
+            text="🗑",
+            command=lambda c=campaign: self.delete_campaign(c),
+            fg_color="#db4437",
+            hover_color="#b8322a",
+            width=30,
+            height=26,
+            corner_radius=6,
+            font=("Arial", 12)
+        ).grid(row=0, column=2, padx=1, sticky="e")
     
     def get_target_summary(self, campaign):
-        """Get target summary for a campaign"""
         parts = []
-        
         if campaign.get("program_id"):
-            parts.append(f"Program ID: {campaign['program_id']}")
+            parts.append(f"Prog:{campaign['program_id']}")
         if campaign.get("session_id"):
-            parts.append(f"Session ID: {campaign['session_id']}")
+            parts.append(f"Sess:{campaign['session_id']}")
         if campaign.get("semester"):
-            parts.append(f"Sem {campaign['semester']}")
+            parts.append(f"Sem:{campaign['semester']}")
         if campaign.get("shift_id"):
-            parts.append(f"Shift ID: {campaign['shift_id']}")
-        
+            parts.append(f"Shift:{campaign['shift_id']}")
         return ", ".join(parts) if parts else "All Students"
     
     def view_details(self, campaign):
-        """Show campaign details"""
         summary = get_campaign_summary(campaign["id"])
         if not summary:
             messagebox.showerror("Error", "Could not load campaign details")
@@ -228,7 +338,6 @@ class CampaignList(ctk.CTkFrame):
         )
     
     def toggle_status(self, campaign):
-        """Toggle campaign active/inactive status"""
         try:
             if campaign["is_active"]:
                 deactivate_campaign(campaign["id"])
@@ -243,7 +352,6 @@ class CampaignList(ctk.CTkFrame):
             messagebox.showerror("Error", str(e))
     
     def delete_campaign(self, campaign):
-        """Delete a campaign"""
         if messagebox.askyesno(
             "Confirm Delete", 
             f"Are you sure you want to delete '{campaign['campaign_name']}'?\n\n"

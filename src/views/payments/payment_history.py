@@ -1,7 +1,9 @@
 # src/views/payments/payment_history.py
 import customtkinter as ctk
+from tkinter import messagebox
 from src.views.payments.collect_payment import CollectPayment
 from src.views.campaigns.payment_status import PaymentStatus
+from src.controllers.payment_controller import get_payment_history, get_payment_by_receipt, delete_payment
 
 
 class PaymentHistory(ctk.CTkFrame):
@@ -149,10 +151,8 @@ class PaymentHistory(ctk.CTkFrame):
     def create_filters(self):
         """Filter/search section (hidden by default, shown when viewing history)"""
         self.filter_frame = ctk.CTkFrame(self)
-        # Initially hidden
         self.filter_frame.pack_forget()
         
-        # We'll show this when "View History" is clicked
         self.filter_frame.pack(fill="x", padx=20, pady=10)
         
         ctk.CTkLabel(
@@ -201,7 +201,7 @@ class PaymentHistory(ctk.CTkFrame):
         headers_frame.pack(fill="x", pady=(0, 2))
         
         headers = ["Receipt No", "Date", "Student", "Campaign", "Amount", "Method", "Received By", "Actions"]
-        widths = [100, 100, 150, 150, 80, 100, 120, 80]
+        widths = [100, 100, 150, 150, 80, 100, 120, 120]
         
         for i, (header, width) in enumerate(zip(headers, widths)):
             ctk.CTkLabel(
@@ -216,23 +216,19 @@ class PaymentHistory(ctk.CTkFrame):
     
     def show_dashboard(self):
         """Show the dashboard cards, hide table and filters"""
-        # Hide filter and table
         self.filter_frame.pack_forget()
         self.table_frame.pack_forget()
         
-        # Show cards (they're already created but might be hidden)
         for widget in self.winfo_children():
             if isinstance(widget, ctk.CTkFrame) and widget not in [self.filter_frame, self.table_frame]:
                 widget.pack(fill="x", padx=20, pady=10)
     
     def show_history(self):
         """Show payment history with filters and table"""
-        # Hide cards
         for widget in self.winfo_children():
             if isinstance(widget, ctk.CTkFrame) and widget not in [self.filter_frame, self.table_frame]:
                 widget.pack_forget()
         
-        # Show filter and table
         self.filter_frame.pack(fill="x", padx=20, pady=10)
         self.table_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
@@ -240,8 +236,6 @@ class PaymentHistory(ctk.CTkFrame):
     
     def load_payments(self):
         """Load all payments"""
-        from src.controllers.payment_controller import get_payment_history
-        
         for widget in self.table_body.winfo_children():
             widget.destroy()
         
@@ -277,21 +271,35 @@ class PaymentHistory(ctk.CTkFrame):
         ctk.CTkLabel(row, text=payment.get("payment_method", "-"), width=100).pack(side="left", padx=5, pady=5)
         ctk.CTkLabel(row, text=payment.get("received_by", "-"), width=120).pack(side="left", padx=5, pady=5)
         
+        # ─── Actions ──────────────────────────────────────────────────────────
         actions_frame = ctk.CTkFrame(row, fg_color="transparent")
         actions_frame.pack(side="right", padx=5, pady=5)
         
+        # View Receipt Button
         ctk.CTkButton(
             actions_frame,
             text="📄",
             command=lambda p=payment: self.view_receipt(p),
             fg_color="#1a73e8",
-            width=30,
-            height=28
+            hover_color="#1557b0",
+            width=35,
+            height=28,
+            corner_radius=6
+        ).pack(side="left", padx=2)
+        
+        # Delete Payment Button
+        ctk.CTkButton(
+            actions_frame,
+            text="🗑",
+            command=lambda p=payment: self.delete_payment_row(p),
+            fg_color="#db4437",
+            hover_color="#b8322a",
+            width=35,
+            height=28,
+            corner_radius=6
         ).pack(side="left", padx=2)
     
     def search_payment(self):
-        from src.controllers.payment_controller import get_payment_by_receipt
-        
         receipt = self.search_entry.get().strip()
         
         if not receipt:
@@ -319,11 +327,34 @@ class PaymentHistory(ctk.CTkFrame):
         if path and os.path.exists(path):
             os.startfile(path)
         else:
-            from tkinter import messagebox
             messagebox.showinfo("Info", "Receipt file not found")
     
+    def delete_payment_row(self, payment):
+        """Delete a payment with confirmation"""
+        receipt_no = payment.get("receipt_number", "Unknown")
+        student_name = payment.get("student_name", "Unknown")
+        amount = payment.get("amount", 0)
+        campaign_name = payment.get("campaign_name", "Unknown")
+        
+        # Confirm deletion
+        if messagebox.askyesno(
+            "⚠️ Confirm Delete Payment",
+            f"Are you sure you want to delete this payment?\n\n"
+            f"📄 Receipt: {receipt_no}\n"
+            f"👨‍🎓 Student: {student_name}\n"
+            f"💰 Amount: Rs. {amount:,.2f}\n"
+            f"📋 Campaign: {campaign_name}\n\n"
+            f"⚠️ This action cannot be undone!"
+        ):
+            try:
+                # Delete the payment
+                delete_payment(payment["id"])
+                messagebox.showinfo("✅ Success", f"Payment {receipt_no} deleted successfully!")
+                self.load_payments()  # Refresh the table
+            except Exception as e:
+                messagebox.showerror("❌ Error", f"Failed to delete payment: {str(e)}")
+    
     def open_collect_payment(self):
-        from src.views.payments.collect_payment import CollectPayment
         parent = self.master
         while parent:
             if hasattr(parent, 'show_view'):
@@ -332,7 +363,6 @@ class PaymentHistory(ctk.CTkFrame):
             parent = parent.master
     
     def open_payment_status(self):
-        from src.views.campaigns.payment_status import PaymentStatus
         parent = self.master
         while parent:
             if hasattr(parent, 'show_view'):
