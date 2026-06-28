@@ -38,7 +38,7 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ### Download
 
-1. Download the latest release from [Releases](https://github.com/yourusername/sdfms/releases)
+1. Download the latest release from [Releases]sha256:b0fb5298677c7299a47f86861b6b68bd1f8460fd1e2cd63cb80e1a3a65a32072)
 2. Extract the ZIP file
 3. Run `SDFMS.exe`
 
