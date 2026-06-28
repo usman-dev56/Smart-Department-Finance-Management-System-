@@ -18,11 +18,15 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ## **Screenshots**
 
-| Dashboard | Payment Collection |
+| Dashboard | Students |
 |-----------|-------------------|
-| ---<img width="1363" height="727" alt="Dashboard" src="https://github.com/user-attachments/assets/b8a7253e-eaac-46e8-9353-ec2d242d5d4b" />| <img width="1363" height="718" alt="Payment" src="https://github.com/user-attachments/assets/af50f463-6f8d-4b80-ad6c-405d19e0d7f3" /> |
+| ---<img width="1363" height="727" alt="Dashboard" src="https://github.com/user-attachments/assets/b8a7253e-eaac-46e8-9353-ec2d242d5d4b" />| <img width="1365" height="717" alt="Students" src="https://github.com/user-attachments/assets/baf369ca-8244-4665-8475-6ca933c73729" />
+ |
 
-
+| Funds | Payment Collection |
+|-----------|-------------------|
+| ---<img width="1355" height="718" alt="Funds" src="https://github.com/user-attachments/assets/691853fa-62a1-45f7-a49a-81a2f9213445" />
+| <img width="1363" height="718" alt="Payment" src="https://github.com/user-attachments/assets/af50f463-6f8d-4b80-ad6c-405d19e0d7f3" /> |
 
 | Reports | Charts |
 |---------|--------|
