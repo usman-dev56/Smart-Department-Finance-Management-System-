@@ -13,16 +13,17 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 - 📈 **Reports & Analytics** - 10+ comprehensive charts and exportable reports (PDF/Excel)
 - ⚙️ **Settings** - Configure department, academic structure, and receipt settings
 
----<img width="1363" height="727" alt="Dashboard" src="https://github.com/user-attachments/assets/b8a7253e-eaac-46e8-9353-ec2d242d5d4b" />
+
 
 
 ## **Screenshots**
 
 | Dashboard | Payment Collection |
 |-----------|-------------------|
-| ![Dashboard](screenshots/dashboard.png) | ![Payment](screenshots/payment.png) |
+| ---<img width="1363" height="727" alt="Dashboard" src="https://github.com/user-attachments/assets/b8a7253e-eaac-46e8-9353-ec2d242d5d4b" />| <img width="1363" height="718" alt="Payment" src="https://github.com/user-attachments/assets/af50f463-6f8d-4b80-ad6c-405d19e0d7f3" /> |
 
 | Reports | Charts |
+
 |---------|--------|
 | ![Reports](screenshots/reports.png) | ![Charts](screenshots/charts.png) |
 
