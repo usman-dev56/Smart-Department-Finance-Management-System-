@@ -83,23 +83,6 @@ SDFMS (Smart Department Finance Management System) is a standalone desktop appli
 
 ---
 
-## **Folder Structure**
-
-SDFMS/
-├── SDFMS.exe # Main executable
-├── data/
-│ ├── database/
-│ │ └── dffms.db # SQLite database
-│ ├── receipts/ # Generated receipts (PDF + QR)
-│ ├── exports/ # Exported reports (PDF/Excel)
-│ ├── backups/ # Database backups
-│ └── logs/ # Application logs
-└── src/ # (Embedded in EXE)
-
-
-
----
-
 ## 🛠️ **Development Setup**
 
 If you want to run from source or contribute:
